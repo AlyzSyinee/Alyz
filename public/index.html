@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ALYZ DEPLOY HUB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #060608;
+      --glass-surface: rgba(22, 23, 28, 0.48);
+      --glass-elevated: rgba(38, 40, 48, 0.55);
+      --silver-border: rgba(225, 230, 240, 0.22);
+      --silver-highlight: rgba(255, 255, 255, 0.45);
+      --silver-text: #F2F4F8;
+      --muted-silver: #9CA3AF;
+      --liquid-gradient: linear-gradient(135deg, rgba(255,255,255,0.28) 0%, rgba(160,168,185,0.08) 50%, rgba(255,255,255,0.18) 100%);
+      --btn-silver: linear-gradient(180deg, #FFFFFF 0%, #C8CDD6 100%);
+    }
+
+    /* ANTI BLOK TEKS & MEDIA GLOBAL */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    /* IZINKAN INPUT DIKETIK & KHUSUS LINK HASIL CREATE BISA DIBLOK/DISALIN */
+    input, textarea {
+      -webkit-user-select: text !important;
+      -moz-user-select: text !important;
+      -ms-user-select: text !important;
+      user-select: text !important;
+      -webkit-touch-callout: default !important;
+    }
+
+    .copyable-link {
+      -webkit-user-select: all !important;
+      -moz-user-select: all !important;
+      -ms-user-select: all !important;
+      user-select: all !important;
+      -webkit-touch-callout: default !important;
+      cursor: text;
+    }
+
+    img, video {
+      pointer-events: none;
+      -webkit-user-drag: none;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--silver-text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* VIDEO BACKGROUND LOCKED & SEAMLESS */
+    .video-bg-wrapper {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 20%, #1d2026 0%, #050507 100%);
+      pointer-events: none;
+    }
+
+    #bgVideo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.58;
+      filter: contrast(1.08) saturate(0.85);
+      pointer-events: none;
+    }
+
+    .bg-vignette {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(180deg, rgba(5,5,7,0.45) 0%, rgba(5,5,7,0.78) 100%);
+      pointer-events: none;
+    }
+
+    /* LIQUID GLASS CONTAINER */
+    .liquid-card {
+      background: var(--glass-surface);
+      backdrop-filter: blur(28px) saturate(160%);
+      -webkit-backdrop-filter: blur(28px) saturate(160%);
+      border: 1px solid var(--silver-border);
+      box-shadow:
+        0 24px 48px rgba(0, 0, 0, 0.65),
+        inset 0 1px 1px var(--silver-highlight),
+        inset 0 -1px 1px rgba(255, 255, 255, 0.05);
+      border-radius: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .liquid-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--liquid-gradient);
+      pointer-events: none;
+      opacity: 0.45;
+    }
+
+    /* LOGIN SCREEN */
+    #loginScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 390px;
+      padding: 36px 28px;
+      text-align: center;
+      animation: floatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .brand-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #E5E7EB;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      margin-bottom: 18px;
+    }
+
+    .login-title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(180deg, #FFFFFF 0%, #9CA3AF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .login-sub {
+      font-size: 13px;
+      color: var(--muted-silver);
+      margin-bottom: 28px;
+    }
+
+    /* INPUT & CONTROLS */
+    .glass-input {
+      width: 100%;
+      padding: 15px 18px;
+      border-radius: 16px;
+      background: rgba(10, 11, 14, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #FFFFFF;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.25s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .glass-input:focus {
+      border-color: rgba(255, 255, 255, 0.6);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 15px 20px;
+      border-radius: 16px;
+      border: none;
+      background: var(--btn-silver);
+      color: #090A0D;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(255, 255, 255, 0.15);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* KOTAK LINK HASIL CREATE (SATU-SATUNYA YANG BISA DIBLOK & DISALIN) */
+    .created-link-box {
+      display: none;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(10, 11, 14, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .created-link-box.show {
+      display: flex;
+    }
+
+    .created-link-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: #FFFFFF;
+      word-break: break-all;
+      flex: 1;
+    }
+
+    .btn-copy-mini {
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.14);
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .btn-copy-mini:active {
+      transform: scale(0.96);
+    }
+
+    /* POPUP MODAL ERROR */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(12px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 340px;
+      padding: 26px 22px;
+      text-align: center;
+      animation: popScale 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* MAIN DASHBOARD */
+    #mainApp {
+      display: none;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 22px 18px 115px;
+    }
+
+    .top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      padding: 0 4px;
+    }
+
+    .top-header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: linear-gradient(180deg, #FFFFFF 0%, #A1A1AA 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .status-pill {
+      font-size: 11px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #D1D5DB;
+    }
+
+    .section-panel {
+      display: none;
+      animation: floatUp 0.35s ease;
+    }
+
+    .section-panel.active {
+      display: block;
+    }
+
+    .card-body {
+      padding: 24px 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .field-group {
+      margin-bottom: 18px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #B4BAC5;
+      margin-bottom: 8px;
+    }
+
+    /* DROPZONE ZIP */
+    .zip-dropzone {
+      border: 1.5px dashed rgba(255, 255, 255, 0.28);
+      border-radius: 18px;
+      padding: 26px 16px;
+      text-align: center;
+      background: rgba(12, 13, 17, 0.45);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .zip-dropzone:hover {
+      border-color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    /* VISIBILITY SEGMENTED CONTROL */
+    .segment-control {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: rgba(10, 11, 14, 0.65);
+      padding: 5px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .segment-btn {
+      padding: 11px;
+      border-radius: 12px;
+      border: none;
+      background: transparent;
+      color: var(--muted-silver);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .segment-btn.active {
+      background: rgba(255, 255, 255, 0.16);
+      color: #FFFFFF;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    /* VERCEL REPO & PROJECT LIST */
+    .sub-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .sub-tab {
+      flex: 1;
+      padding: 11px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted-silver);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .sub-tab.active {
+      background: rgba(255, 255, 255, 0.16);
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .repo-item {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(14, 15, 20, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .repo-item.selected, .repo-item:hover {
+      border-color: rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    .repo-meta h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #FFFFFF;
+      margin-bottom: 3px;
+    }
+
+    .repo-meta span {
+      font-size: 11px;
+      color: var(--muted-silver);
+    }
+
+    .badge-tag {
+      font-size: 10px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #E5E7EB;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* REAL PROGRESS BAR */
+    .progress-wrapper {
+      display: none;
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(10, 11, 14, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #9CA3AF 0%, #FFFFFF 100%);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.65);
+      transition: width 0.35s ease;
+    }
+
+    /* FLOATING LIQUID GLASS BOTTOM NAV */
+    .bottom-nav {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 36px);
+      max-width: 360px;
+      padding: 7px;
+      border-radius: 999px;
+      background: rgba(24, 26, 32, 0.65);
+      backdrop-filter: blur(30px) saturate(180%);
+      -webkit-backdrop-filter: blur(30px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      z-index: 50;
+    }
+
+    .nav-btn {
+      padding: 13px 16px;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      color: var(--muted-silver);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nav-btn.active {
+      background: var(--btn-silver);
+      color: #090A0D;
+      box-shadow: 0 6px 18px rgba(255, 255, 255, 0.22);
+    }
+
+    @keyframes floatUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes popScale {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BACKGROUND VIDEO (GANTI LINK VIDEO DI ATRIBUT src DI BAWAH INI) -->
+  <div class="video-bg-wrapper">
+    <video
+      id="bgVideo"
+      src="https://assets.mixkit.co/videos/preview/mixkit-abstract-silver-and-black-liquid-metal-42874-large.mp4"
+      autoplay
+      loop
+      muted
+      playsinline
+      preload="auto"
+    ></video>
+  </div>
+  <div class="bg-vignette"></div>
+
+  <!-- POPUP MODAL NOTIFIKASI -->
+  <div id="popupModal" class="modal-overlay">
+    <div class="liquid-card modal-card">
+      <div class="brand-badge" style="margin-bottom:12px;">SYSTEM NOTICE</div>
+      <h3 id="modalTitle" style="font-size:17px; margin-bottom:8px;">Akses Ditolak</h3>
+      <p id="modalDesc" style="font-size:13px; color:#B4BAC5; margin-bottom:16px; line-height:1.5;">Password yang dimasukkan salah.</p>
+
+      <!-- AREA LINK HASIL CREATE YANG BISA DIBLOK & DISALIN -->
+      <div id="modalLinkBox" class="created-link-box">
+        <span id="modalCreatedLink" class="created-link-text copyable-link"></span>
+        <button type="button" id="modalCopyBtn" class="btn-copy-mini" onclick="copyGeneratedLink()">SALIN</button>
+      </div>
+
+      <button class="btn-primary" onclick="closeModal()">TUTUP</button>
+    </div>
+  </div>
+
+  <!-- HALAMAN LOGIN -->
+  <section id="loginScreen">
+    <div class="liquid-card login-box">
+      <div class="brand-badge">ALYZ VIP SYSTEM</div>
+      <h2 class="login-title">ALYZ SECURITY</h2>
+      <p class="login-sub">Masukkan Password untuk masuk ke VIP dev.</p>
+      <div class="field-group">
+        <input type="password" id="passwordInput" class="glass-input" placeholder="Masukkan Password Akses" autocomplete="off" />
+      </div>
+      <button id="loginBtn" class="btn-primary" onclick="verifyLogin()">MASUK</button>
+    </div>
+  </section>
+
+  <!-- BERANDA UTAMA -->
+  <main id="mainApp">
+    <header class="top-header">
+      <div>
+        <h1>ALYZ DEPLOY HUB</h1>
+        <span style="font-size:11px; color:#9CA3AF;">GitHub Repository & Vercel Cloud Engine</span>
+      </div>
+      <div class="status-pill">ENV CONNECTED</div>
+    </header>
+
+    <!-- MENU 1: GITHUB -->
+    <section id="githubPanel" class="section-panel active">
+      <div class="liquid-card">
+        <div class="card-body">
+          <div class="brand-badge" style="margin-bottom:14px;">GITHUB REPOSITORY ENGINE</div>
+
+          <div class="field-group">
+            <label class="field-label">Nama Repository Baru</label>
+            <input type="text" id="repoNameInput" class="glass-input" placeholder="contoh: alyz-landing-page" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Visibilitas Repository</label>
+            <div class="segment-control">
+              <button type="button" id="btnPublic" class="segment-btn active" onclick="setPrivacy(false)">NON PRIVAT (PUBLIC)</button>
+              <button type="button" id="btnPrivate" class="segment-btn" onclick="setPrivacy(true)">PRIVATE REPO</button>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Upload File ZIP (Auto Unarchive)</label>
+            <div class="zip-dropzone" onclick="document.getElementById('zipFileInput').click()">
+              <p id="zipFileName" style="font-size:13px; font-weight:600; color:#F3F4F6; margin-bottom:4px;">Pilih File Archive (.ZIP)</p>
+              <span style="font-size:11px; color:#9CA3AF;">Isi file ZIP akan langsung diekstrak ke struktur utama repo</span>
+            </div>
+            <input type="file" id="zipFileInput" accept=".zip" style="display:none" onchange="handleZipSelect(this)" />
+          </div>
+
+          <button id="btnAddRepo" class="btn-primary" onclick="createGithubRepo()">TAMBAH</button>
+
+          <div id="ghProgressWrap" class="progress-wrapper">
+            <div class="progress-header">
+              <span id="ghProgressLabel">Mengunggah & Ekstrak ZIP...</span>
+              <span id="ghProgressPct">0%</span>
+            </div>
+            <div class="progress-track">
+              <div id="ghProgressBar" class="progress-fill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENU 2: VERCEL -->
+    <section id="vercelPanel" class="section-panel">
+      <div class="liquid-card">
+        <div class="card-body">
+          <div class="brand-badge" style="margin-bottom:14px;">VERCEL CLOUD DEPLOYMENT</div>
+
+          <div class="sub-tabs">
+            <button type="button" id="tabImportNew" class="sub-tab active" onclick="switchVercelSubTab('import')">IMPORT REPO BARU</button>
+            <button type="button" id="tabManageExisting" class="sub-tab" onclick="switchVercelSubTab('manage')">EDIT WEB TERIMPORT</button>
+          </div>
+
+          <!-- SUB-VIEW A: IMPORT REPO DARI GITHUB -->
+          <div id="vercelImportView">
+            <div class="field-group">
+              <label class="field-label">Pilih Repository dari GitHub</label>
+              <div id="githubRepoList" style="max-height:220px; overflow-y:auto; padding-right:4px;">
+                <p style="font-size:12px; color:#9CA3AF;">Memuat daftar repository...</p>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Nama Domain Vercel</label>
+              <input type="text" id="vercelDomainInput" class="glass-input" placeholder="misal: alyz.vercel.app" />
+            </div>
+
+            <button id="btnCreateVercel" class="btn-primary" onclick="deployToVercel()">CREATE</button>
+
+            <div id="vcProgressWrap" class="progress-wrapper">
+              <div class="progress-header">
+                <span id="vcProgressLabel">Menyiapkan Build Vercel...</span>
+                <span id="vcProgressPct">0%</span>
+              </div>
+              <div class="progress-track">
+                <div id="vcProgressBar" class="progress-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUB-VIEW B: EDIT PROJECT VERCEL YANG SUDAH DIIMPORT -->
+          <div id="vercelManageView" style="display:none;">
+            <div id="vercelProjectsList">
+              <p style="font-size:12px; color:#9CA3AF;">Memuat project Vercel...</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- BOTTOM NAVIGATION (2 MENU: GITHUB & VERCEL) -->
+  <nav id="bottomNav" class="bottom-nav" style="display:none;">
+    <button id="navGithub" class="nav-btn active" onclick="switchMainTab('github')">GITHUB</button>
+    <button id="navVercel" class="nav-btn" onclick="switchMainTab('vercel')">VERCEL</button>
+  </nav>
+
+  <script>
+    // ==========================================
+    // PROTEKSI KETAT: BLOKIR SELEKSI TEKS & MEDIA
+    // KECUALI LINK HASIL CREATE (.copyable-link) & INPUT
+    // ==========================================
+    document.addEventListener('contextmenu', (e) => {
+      if (!e.target.closest('.copyable-link') && e.target.tagName !== 'INPUT') {
+        e.preventDefault();
+      }
+    });
+
+    document.addEventListener('selectstart', (e) => {
+      if (!e.target.closest('.copyable-link') && e.target.tagName !== 'INPUT') {
+        e.preventDefault();
+      }
+    });
+
+    document.addEventListener('dragstart', (e) => {
+      e.preventDefault();
+    });
+
+    document.addEventListener('copy', (e) => {
+      const sel = window.getSelection();
+      const anchorNode = sel && sel.anchorNode ? (sel.anchorNode.nodeType === 3 ? sel.anchorNode.parentElement : sel.anchorNode) : null;
+      if (!anchorNode || (!anchorNode.closest('.copyable-link') && anchorNode.tagName !== 'INPUT')) {
+        e.preventDefault();
+      }
+    });
+
+    // ==========================================
+    // KONFIGURASI LINK VIDEO BACKGROUND (OFFLINE CACHE)
+    // ==========================================
+    const VIDEO_BG_URL = document.getElementById('bgVideo').getAttribute('src');
+
+    async function initOfflineVideoCache() {
+      const videoEl = document.getElementById('bgVideo');
+      videoEl.addEventListener('pause', () => {
+        videoEl.play().catch(() => {});
+      });
+
+      if ('caches' in window) {
+        try {
+          const cache = await caches.open('alyz-bg-video-v1');
+          const cachedResponse = await cache.match(VIDEO_BG_URL);
+          if (cachedResponse) {
+            const blob = await cachedResponse.blob();
+            videoEl.src = URL.createObjectURL(blob);
+            videoEl.play().catch(() => {});
+          } else {
+            const networkResponse = await fetch(VIDEO_BG_URL);
+            if (networkResponse.ok) {
+              await cache.put(VIDEO_BG_URL, networkResponse.clone());
+              const blob = await networkResponse.blob();
+              videoEl.src = URL.createObjectURL(blob);
+              videoEl.play().catch(() => {});
+            }
+          }
+        } catch (e) {
+          videoEl.play().catch(() => {});
+        }
+      }
+    }
+    initOfflineVideoCache();
+
+    // ==========================================
+    // POPUP & COPY LINK HELPER
+    // ==========================================
+    let currentCreatedLink = '';
+
+    function showModal(title, desc, createdUrl = '') {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+
+      const linkBox = document.getElementById('modalLinkBox');
+      const linkText = document.getElementById('modalCreatedLink');
+      const copyBtn = document.getElementById('modalCopyBtn');
+
+      if (createdUrl) {
+        currentCreatedLink = createdUrl;
+        linkText.textContent = createdUrl;
+        copyBtn.textContent = 'SALIN';
+        linkBox.classList.add('show');
+      } else {
+        currentCreatedLink = '';
+        linkText.textContent = '';
+        linkBox.classList.remove('show');
+      }
+
+      document.getElementById('popupModal').classList.add('active');
+    }
+
+    function copyGeneratedLink() {
+      if (!currentCreatedLink) return;
+      navigator.clipboard.writeText(currentCreatedLink).then(() => {
+        document.getElementById('modalCopyBtn').textContent = 'TERSALIN';
+      });
+    }
+
+    function copyTextDirect(text, btnEl) {
+      navigator.clipboard.writeText(text).then(() => {
+        const old = btnEl.textContent;
+        btnEl.textContent = 'TERSALIN';
+        setTimeout(() => { btnEl.textContent = old; }, 1500);
+      });
+    }
+
+    function closeModal() {
+      document.getElementById('popupModal').classList.remove('active');
+    }
+
+    // ==========================================
+    // LOGIN SYSTEM (ENV PASSWORD VERIFICATION)
+    // ==========================================
+    async function verifyLogin() {
+      const password = document.getElementById('passwordInput').value.trim();
+      const btn = document.getElementById('loginBtn');
+      if (!password) {
+        showModal('Password Kosong', 'Silakan masukkan password akses terlebih dahulu.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'MEMVERIFIKASI...';
+
+      try {
+        const res = await fetch('/api/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password }),
+        });
+
+        if (res.ok) {
+          document.getElementById('loginScreen').style.display = 'none';
+          document.getElementById('mainApp').style.display = 'block';
+          document.getElementById('bottomNav').style.display = 'grid';
+          loadGithubRepos();
+          loadVercelProjects();
+        } else {
+          showModal('Password Salah', 'Password tidak sesuai dengan konfigurasi ENV server.');
+        }
+      } catch (err) {
+        showModal('Koneksi Gagal', 'Tidak dapat terhubung ke server autentikasi.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'MASUK BERANDA';
+      }
+    }
+
+    document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') verifyLogin();
+    });
+
+    // ==========================================
+    // NAVIGATION CONTROLLER
+    // ==========================================
+    function switchMainTab(tab) {
+      document.getElementById('navGithub').classList.toggle('active', tab === 'github');
+      document.getElementById('navVercel').classList.toggle('active', tab === 'vercel');
+      document.getElementById('githubPanel').classList.toggle('active', tab === 'github');
+      document.getElementById('vercelPanel').classList.toggle('active', tab === 'vercel');
+
+      if (tab === 'vercel') {
+        loadGithubRepos();
+        loadVercelProjects();
+      }
+    }
+
+    function switchVercelSubTab(sub) {
+      document.getElementById('tabImportNew').classList.toggle('active', sub === 'import');
+      document.getElementById('tabManageExisting').classList.toggle('active', sub === 'manage');
+      document.getElementById('vercelImportView').style.display = sub === 'import' ? 'block' : 'none';
+      document.getElementById('vercelManageView').style.display = sub === 'manage' ? 'block' : 'none';
+    }
+
+    // ==========================================
+    // GITHUB LOGIC (CREATE REPO & UNARCHIVE ZIP)
+    // ==========================================
+    let isRepoPrivate = false;
+    let selectedZipFile = null;
+
+    function setPrivacy(priv) {
+      isRepoPrivate = priv;
+      document.getElementById('btnPublic').classList.toggle('active', !priv);
+      document.getElementById('btnPrivate').classList.toggle('active', priv);
+    }
+
+    function handleZipSelect(input) {
+      if (input.files && input.files[0]) {
+        selectedZipFile = input.files[0];
+        document.getElementById('zipFileName').textContent = `${selectedZipFile.name} (${(selectedZipFile.size / 1024).toFixed(1)} KB)`;
+      }
+    }
+
+    function createGithubRepo() {
+      const repoName = document.getElementById('repoNameInput').value.trim();
+      if (!repoName) {
+        showModal('Data Belum Lengkap', 'Isi nama repository terlebih dahulu.');
+        return;
+      }
+      if (!selectedZipFile) {
+        showModal('File ZIP Kosong', 'Pilih file .ZIP yang berisi source code web Anda.');
+        return;
+      }
+
+      const btn = document.getElementById('btnAddRepo');
+      const wrap = document.getElementById('ghProgressWrap');
+      const bar = document.getElementById('ghProgressBar');
+      const pct = document.getElementById('ghProgressPct');
+      const label = document.getElementById('ghProgressLabel');
+
+      btn.disabled = true;
+      wrap.style.display = 'block';
+      bar.style.width = '5%';
+      pct.textContent = '5%';
+      label.textContent = 'Membaca & Encoding File ZIP...';
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const base64Data = e.target.result.split(',')[1];
+        const payload = JSON.stringify({
+          repoName,
+          isPrivate: isRepoPrivate,
+          zipBase64: base64Data,
+        });
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/github', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.upload.onprogress = function (event) {
+          if (event.lengthComputable) {
+            const uploadPercent = Math.round((event.loaded / event.total) * 65);
+            bar.style.width = uploadPercent + '%';
+            pct.textContent = uploadPercent + '%';
+            label.textContent = 'Mengirim Archive ke GitHub Engine...';
+          }
+        };
+
+        xhr.upload.onload = function () {
+          bar.style.width = '80%';
+          pct.textContent = '80%';
+          label.textContent = 'Unarchive & Commit ke Branch Main...';
+        };
+
+        xhr.onload = function () {
+          btn.disabled = false;
+          const response = JSON.parse(xhr.responseText || '{}');
+          if (xhr.status === 200 && response.success) {
+            bar.style.width = '100%';
+            pct.textContent = '100%';
+            label.textContent = `Selesai (${response.filesCount} File Berhasil Diunggah)`;
+            showModal(
+              'Repository Berhasil Dibuat',
+              `${response.fullName} siap di-import ke Vercel.`,
+              response.repoUrl
+            );
+            loadGithubRepos();
+          } else {
+            wrap.style.display = 'none';
+            showModal('Gagal Membuat Repo', response.error || 'Terjadi kesalahan saat push ke GitHub.');
+          }
+        };
+
+        xhr.onerror = function () {
+          btn.disabled = false;
+          wrap.style.display = 'none';
+          showModal('Network Error', 'Gagal terhubung ke API GitHub.');
+        };
+
+        xhr.send(payload);
+      };
+
+      reader.readAsDataURL(selectedZipFile);
+    }
+
+    // ==========================================
+    // VERCEL LOGIC (LIST REPOS, IMPORT & REAL BUILD TRACKING)
+    // ==========================================
+    let selectedGithubRepo = null;
+
+    async function loadGithubRepos() {
+      const container = document.getElementById('githubRepoList');
+      try {
+        const res = await fetch('/api/github');
+        const repos = await res.json();
+        if (!Array.isArray(repos)) return;
+
+        container.innerHTML = repos.map((repo) => `
+          <div class="repo-item" onclick='selectRepoForVercel(${JSON.stringify({ id: repo.id, name: repo.name, full_name: repo.full_name })}, this)'>
+            <div class="repo-meta">
+              <h4>${repo.name}</h4>
+              <span>${repo.full_name}</span>
+            </div>
+            <span class="badge-tag">${repo.private ? 'PRIVATE' : 'PUBLIC'}</span>
+          </div>
+        `).join('');
+      } catch (e) {
+        container.innerHTML = '<p style="font-size:12px; color:#9CA3AF;">Gagal memuat repo GitHub.</p>';
+      }
+    }
+
+    function selectRepoForVercel(repo, el) {
+      selectedGithubRepo = repo;
+      document.querySelectorAll('#githubRepoList .repo-item').forEach((item) => item.classList.remove('selected'));
+      el.classList.add('selected');
+      const domainInput = document.getElementById('vercelDomainInput');
+      if (!domainInput.value) {
+        domainInput.value = `${repo.name}.vercel.app`;
+      }
+    }
+
+    async function deployToVercel() {
+      if (!selectedGithubRepo) {
+        showModal('Pilih Repository', 'Pilih salah satu repository GitHub dari daftar di atas.');
+        return;
+      }
+
+      const domainVal = document.getElementById('vercelDomainInput').value.trim();
+      const projectName = domainVal ? domainVal.replace('.vercel.app', '').split('.')[0] : selectedGithubRepo.name;
+
+      const btn = document.getElementById('btnCreateVercel');
+      const wrap = document.getElementById('vcProgressWrap');
+      const bar = document.getElementById('vcProgressBar');
+      const pct = document.getElementById('vcProgressPct');
+      const label = document.getElementById('vcProgressLabel');
+
+      btn.disabled = true;
+      wrap.style.display = 'block';
+      bar.style.width = '15%';
+      pct.textContent = '15%';
+      label.textContent = 'Menghubungkan Repository ke Vercel...';
+
+      try {
+        const res = await fetch('/api/vercel', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            projectName,
+            repoFullName: selectedGithubRepo.full_name,
+            repoId: selectedGithubRepo.id,
+            domainName: domainVal,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Gagal memulai deployment Vercel');
+        }
+
+        bar.style.width = '40%';
+        pct.textContent = '40%';
+        label.textContent = 'Build Queued di Server Vercel...';
+
+        const finalLiveUrl = `https://${data.url}`;
+
+        if (data.deploymentId) {
+          let currentPct = 40;
+          const pollInterval = setInterval(async () => {
+            const statusRes = await fetch(`/api/vercel?deploymentId=${data.deploymentId}`);
+            const statusData = await statusRes.json();
+            const state = statusData.readyState || statusData.state;
+
+            if (state === 'BUILDING' && currentPct < 85) {
+              currentPct += 10;
+              bar.style.width = currentPct + '%';
+              pct.textContent = currentPct + '%';
+              label.textContent = 'Building Production Assets...';
+            } else if (state === 'READY') {
+              clearInterval(pollInterval);
+              bar.style.width = '100%';
+              pct.textContent = '100%';
+              label.textContent = 'Deployment Live';
+              btn.disabled = false;
+              loadVercelProjects();
+              showModal('Website Berhasil Dibuat', 'Domain web telah aktif dan siap disalin:', finalLiveUrl);
+            } else if (state === 'ERROR' || state === 'CANCELED') {
+              clearInterval(pollInterval);
+              btn.disabled = false;
+              wrap.style.display = 'none';
+              showModal('Build Gagal', 'Proses build di Vercel mengalami error.');
+            }
+          }, 2500);
+        } else {
+          bar.style.width = '100%';
+          pct.textContent = '100%';
+          label.textContent = 'Project Terimport';
+          btn.disabled = false;
+          loadVercelProjects();
+          showModal('Website Berhasil Dibuat', 'Domain web telah aktif dan siap disalin:', finalLiveUrl);
+        }
+      } catch (err) {
+        btn.disabled = false;
+        wrap.style.display = 'none';
+        showModal('Error Vercel', err.message);
+      }
+    }
+
+    async function loadVercelProjects() {
+      const container = document.getElementById('vercelProjectsList');
+      try {
+        const res = await fetch('/api/vercel');
+        const projects = await res.json();
+        if (!Array.isArray(projects) || projects.length === 0) {
+          container.innerHTML = '<p style="font-size:12px; color:#9CA3AF;">Belum ada project Vercel yang terimport.</p>';
+          return;
+        }
+
+        container.innerHTML = projects.map((proj) => {
+          const liveDomain = `https://${proj.name}.vercel.app`;
+          return `
+            <div class="repo-item" style="flex-direction:column; align-items:stretch; gap:10px; cursor:default;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="repo-meta">
+                  <h4>${proj.name}</h4>
+                  <span class="copyable-link" style="color:#E5E7EB; font-weight:500;">${liveDomain}</span>
+                </div>
+                <button type="button" class="btn-copy-mini" onclick="copyTextDirect('${liveDomain}', this)">SALIN LINK</button>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="editDom_${proj.id}" class="glass-input" style="padding:10px 12px; font-size:12px;" placeholder="Tambah / Edit Domain (misal: webbaru.vercel.app)" />
+                <button class="btn-primary" style="width:auto; padding:10px 16px; font-size:11px;" onclick="updateVercelProject('${proj.id}')">SIMPAN</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        container.innerHTML = '<p style="font-size:12px; color:#9CA3AF;">Gagal memuat daftar project Vercel.</p>';
+      }
+    }
+
+    async function updateVercelProject(projectId) {
+      const newDomain = document.getElementById(`editDom_${projectId}`).value.trim();
+      if (!newDomain) {
+        showModal('Input Kosong', 'Masukkan nama domain baru yang ingin ditambahkan.');
+        return;
+      }
+
+      const res = await fetch('/api/vercel', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectId, newDomain }),
+      });
+
+      if (res.ok) {
+        const formattedDomain = newDomain.startsWith('http') ? newDomain : `https://${newDomain.includes('.') ? newDomain : newDomain + '.vercel.app'}`;
+        showModal('Domain Diperbarui', 'Domain baru berhasil ditautkan dan siap disalin:', formattedDomain);
+        loadVercelProjects();
+      } else {
+        showModal('Gagal Update', 'Pastikan nama domain belum dipakai user lain di Vercel.');
+      }
+    }
+  </script>
+</body>
+</html>
