@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  const token = process.env.VERCEL_TOKEN;
+  const token = process.env.MY_VERCEL_TOKEN;
   if (!token) return res.status(500).json({ error: 'VERCEL_TOKEN belum diset di ENV' });
 
   const headers = {
